@@ -1,0 +1,32 @@
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant API as Backend API
+    participant DB as Database
+    participant amCharts as AmCharts Graph
+
+    User->>Frontend: Modifie la quantité du produit (UI)
+    Frontend->>API: PUT /api/products/{id} (productData)
+    activate API
+    API->>DB: Appelle productRepository.updateProduct(id, productData)
+    activate DB
+    DB-->>API: Statut de la mise à jour (succès/échec)
+    deactivate DB
+    API-->>Frontend: Réponse de l'API (200 OK)
+    deactivate API
+
+    Frontend->>Frontend: Appelle fetchAndDisplayProducts()
+    Frontend->>API: GET /api/products
+    activate API
+    API->>DB: Appelle productRepository.getAllProducts()
+    activate DB
+    DB-->>API: Liste des produits
+    deactivate DB
+    API-->>Frontend: Liste des produits
+    deactivate API
+
+    Frontend->>Frontend: Met à jour le tableau des produits (UI)
+    Frontend->>amCharts: Appelle updateChart(aggregatedData)
+    amCharts->>Frontend: Rend le graphique mis à jour (UI)
+```
